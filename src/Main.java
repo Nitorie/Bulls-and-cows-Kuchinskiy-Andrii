@@ -32,8 +32,6 @@ public class Main {
 
     //Сравнение чисел и нахождение быков и коров
       while (bulls != n) {
-        bulls = 0;
-        cows = 0;
 
         System.out.print("Напишiть будь-яке " +n+"-значне число : ");
         String asd = scanner.next();
@@ -83,7 +81,10 @@ public class Main {
 
         if (bulls == n) {
           System.out.println("🎉🎉Ви🎉вгадали🎉число🎉за🎉" + attemps + "🎉спроб!🎉🎉");
+          break;
         }
+        bulls = 0;
+        cows = 0;
     }
 
     scanner.close();
