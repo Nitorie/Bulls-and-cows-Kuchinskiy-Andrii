@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -11,15 +12,30 @@ public class Main {
 
     Scanner scanner = new Scanner(System.in);
     Random r = new Random();
-    System.out.print("Введiть довжину числа : ");
-    n = scanner.nextInt();
 
-    if (n <= 0) {
-      System.out.println("Довжина числа повинна бути більше 0");
-      return;
-    } else {
-      System.out.println("Створилось рандомне " +n+ "-значне число");
+    while (true) {
+    try {
+      System.out.print("Введiть довжину числа : ");
+        n = scanner.nextInt();
+      // проверяем, что число положительное
+      if (n <= 0) {
+        throw new IllegalArgumentException("Довжина числа повинна бути більше 0");
+      }
+      // проверяем, что число не больше 9 цифр
+      if (n > 9) {
+        throw new IllegalArgumentException("Довжина числа має бути від 1 до 9 цифр");
+      }
+      break;
+    } catch (InputMismatchException e) {
+      System.out.println("Помилка 1. Треба ввести ціле число");
+      scanner.nextLine();
+    } catch (IllegalArgumentException e) {
+      System.out.println(e.getMessage());
     }
+  }
+
+      System.out.println("Створилось рандомне " +n+ "-значне число");
+
 
     //Фунция что-бы первая цифра не была 0 и что-бы число было n-значное
     p = r.nextInt(9) + 1;
@@ -32,52 +48,59 @@ public class Main {
 
     //Сравнение чисел и нахождение быков и коров
       while (bulls != n) {
+        String asd = "";
+        try {
+          System.out.print("Напишiть будь-яке " + n + "-значне число : ");
+          asd = scanner.next();
 
-        System.out.print("Напишiть будь-яке " +n+"-значне число : ");
-        String asd = scanner.next();
-        if (asd.length() != n) {
-          System.out.println("Потрібно ввести рівно " + n + " цифр");
-          continue;
-        }
-        //Преобразовуем строку в инт
-        int b = Integer.parseInt(asd);
-
-        //разбиваем числа на отдельные цифры и записываем их как массив
-        int[] digits = new int[n];
-        for (int i = n-1; i >= 0; i--) {
-          digits[i] = b % 10;
-          b /= 10;
-        }
-
-        int tempP = p;
-        int[] secretDigits = new int[n];
-        for (int i = n - 1; i >= 0; i--) {
-          secretDigits[i] = tempP % 10;
-          tempP /= 10;
-        }
-
-        for (int i = 0; i < n; i++) {
-          if (digits[i] == secretDigits[i]) {
-            bulls++;
+          if (asd.length() != n) {
+            throw new NumberFormatException("Введіть будь яке ціле " + n + "-значне число");
           }
-        }
 
-        for (int i = 0; i < n; i++) {
-          if (digits[i] == secretDigits[i]) continue;
+          //Преобразовуем строку в инт
+          int b = Integer.parseInt(asd);
 
-          for (int j = 0; j < n; j++) {
-            if (i != j && digits[i] == secretDigits[j]) {
-              cows++;
-              break;
+          //разбиваем числа на отдельные цифры и записываем их как массив
+          int[] digits = new int[n];
+          for (int i = n-1; i >= 0; i--) {
+            digits[i] = b % 10;
+            b /= 10;
+          }
+
+          int tempP = p;
+          int[] secretDigits = new int[n];
+          for (int i = n - 1; i >= 0; i--) {
+            secretDigits[i] = tempP % 10;
+            tempP /= 10;
+          }
+
+          for (int i = 0; i < n; i++) {
+            if (digits[i] == secretDigits[i]) {
+              bulls++;
             }
           }
+
+          for (int i = 0; i < n; i++) {
+            if (digits[i] == secretDigits[i]) continue;
+
+            for (int j = 0; j < n; j++) {
+              if (i != j && digits[i] == secretDigits[j]) {
+                cows++;
+                break;
+              }
+            }
+          }
+
+          System.out.println("Бики: " + bulls);
+          System.out.println("Корови: " + cows);
+          attemps++;
+          System.out.println("Кiлькiсть спроб: " +attemps);
+
+        } catch (NumberFormatException e) {
+          System.out.println("Помилка 2. Потрібно ввести будь яке ціле " + n + "-значне число");
+          scanner.nextLine();
         }
 
-
-      System.out.println("Бики: " + bulls);
-      System.out.println("Корови: " + cows);
-      attemps++;
-        System.out.println("Кiлькiсть спроб: " +attemps);
 
         if (bulls == n) {
           System.out.println("🎉🎉Ви🎉вгадали🎉число🎉за🎉" + attemps + "🎉спроб!🎉🎉");
